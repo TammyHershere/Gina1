@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>單字挑戰測驗遊戲</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 800px;
+        }
+        .correct-answer {
+            background-color: #4ade80 !important; /* 綠色背景 */
+            color: white !important;
+        }
+        .wrong-answer {
+            background-color: #f87171 !important; /* 紅色背景 */
+            color: white !important;
+        }
+        .disabled-option {
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div id="quiz-container" class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl text-center flex flex-col items-center">
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-6">單字挑戰測驗</h1>
+        <div id="score-display" class="text-lg text-gray-600 mb-4">分數：0</div>
+        <div id="question-number" class="text-sm text-gray-500 mb-6">問題：1 / 30</div>
+        
+        <div id="question-card" class="bg-blue-100 p-6 rounded-xl w-full transition-transform transform scale-100 duration-500 ease-out">
+            <p id="question-text" class="text-xl sm:text-2xl text-gray-800 font-semibold mb-6"></p>
+            <div id="options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- 選項會透過 JavaScript 動態生成 -->
+            </div>
+        </div>
+        
+        <div id="feedback-message" class="mt-6 text-xl font-bold hidden"></div>
+        
+        <button id="next-button" class="mt-8 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-colors duration-300 transform hover:scale-105 hidden">
+            下一題
+        </button>
+        <button id="restart-button" class="mt-8 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-colors duration-300 transform hover:scale-105 hidden">
+            再玩一次
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const quizData = [
+                {
+                    "question": "The athlete's consistent practice will ______ his chance of winning a gold medal.",
+                    "options": ["advise", "guarantee", "frown", "jot"],
+                    "answer": "guarantee"
+                },
+                {
+                    "question": "The police had to ______ the small crowd from blocking the road.",
+                    "options": ["vanish", "breed", "eliminate", "tend"],
+                    "answer": "eliminate"
+                },
+                {
+                    "question": "The new manager's leadership style is said to have ______ to the recent success of the team.",
+                    "options": ["attributed", "consulted", "operated", "wandered"],
+                    "answer": "attributed"
+                },
+                {
+                    "question": "He was asked to ______ the results of the survey in a clear and concise way.",
+                    "options": ["jot", "expand", "project", "melt"],
+                    "answer": "project"
+                },
+                {
+                    "question": "The government aims to ______ the budget deficit over the next five years.",
+                    "options": ["decrease", "recover", "reverse", "tend"],
+                    "answer": "decrease"
+                },
+                {
+                    "question": "The talented young singer was chosen to ______ at the opening ceremony of the event.",
+                    "options": ["specialize", "feature", "admonish", "marched"],
+                    "answer": "feature"
+                },
+                {
+                    "question": "The coach's inspiring speech successfully ______ the team to achieve their full potential.",
+                    "options": ["implied", "motivated", "expanded", "consulted"],
+                    "answer": "motivated"
+                },
+                {
+                    "question": "He had to ______ his car to avoid a deer that suddenly appeared on the road.",
+                    "options": ["reverse", "depart", "breed", "strive"],
+                    "answer": "reverse"
+                },
+                {
+                    "question": "After the long and difficult match, the tennis player was slowly ______ her strength.",
+                    "options": ["recovering", "decreasing", "gliding", "frowning"],
+                    "answer": "recovering"
+                },
+                {
+                    "question": "The company's new policy ______ that all employees must complete the training by Friday.",
+                    "options": ["implies", "advises", "wanders", "reverses"],
+                    "answer": "implies"
+                },
+                {
+                    "question": "The new CEO plans to ______ the company and enter new international markets.",
+                    "options": ["expand", "dismiss", "eliminate", "operate"],
+                    "answer": "expand"
+                },
+                {
+                    "question": "During the winter, many species of animals have to ______ for survival.",
+                    "options": ["strive", "depart", "glided", "depicted"],
+                    "answer": "strive"
+                },
+                {
+                    "question": "The students ______ into the auditorium to listen to the guest speaker.",
+                    "options": ["wandered", "marched", "departed", "glided"],
+                    "answer": "glided"
+                },
+                {
+                    "question": "The old woman's kind smile ______ that she was a friendly person.",
+                    "options": ["implied", "examined", "departed", "consulted"],
+                    "answer": "implied"
+                },
+                {
+                    "question": "After the storm, the roads were a mess and cars had ______ into each other.",
+                    "options": ["crashed", "departed", "melted", "vanished"],
+                    "answer": "crashed"
+                },
+                {
+                    "question": "The journalist was able to ______ a photo of the rare bird in its natural habitat.",
+                    "options": ["captured", "depicted", "consulted", "operated"],
+                    "answer": "captured"
+                },
+                {
+                    "question": "The old factory was shut down because it had begun to ______ pollution-related health problems in the community.",
+                    "options": ["glided", "breed", "depicted", "tend"],
+                    "answer": "breed"
+                },
+                {
+                    "question": "The little stream ______ through the forest, a ribbon of silver in the moonlight.",
+                    "options": ["wandered", "marched", "departed", "vanished"],
+                    "answer": "wandered"
+                },
+                {
+                    "question": "To get a second opinion, she decided to ______ a different doctor.",
+                    "options": ["admonish", "advise", "consult", "dismiss"],
+                    "answer": "consult"
+                },
+                {
+                    "question": "He was told to ______ his habit of arriving late to meetings.",
+                    "options": ["recover", "eliminate", "tend", "reverse"],
+                    "answer": "eliminate"
+                },
+                {
+                    "question": "As the sun rose, the morning fog began to ______ and reveal the landscape.",
+                    "options": ["vanish", "marched", "departed", "crashed"],
+                    "answer": "vanish"
+                },
+                {
+                    "question": "The military troops ______ at a steady pace towards the city.",
+                    "options": ["wandered", "marched", "glided", "frowned"],
+                    "answer": "marched"
+                },
+                {
+                    "question": "The new exhibition will ______ an impressive collection of ancient artifacts.",
+                    "options": ["depict", "recover", "feature", "implied"],
+                    "answer": "feature"
+                },
+                {
+                    "question": "She ______ her son for misbehaving at the dinner table.",
+                    "options": ["admonished", "advised", "consulted", "engaged"],
+                    "answer": "admonished"
+                },
+                {
+                    "question": "The new operating system is designed to ______ more efficiently than the previous version.",
+                    "options": ["operate", "expand", "tend", "strive"],
+                    "answer": "operate"
+                },
+                {
+                    "question": "The company's logo ______ the idea of speed and innovation.",
+                    "options": ["envisions", "projects", "reverses", "depicts"],
+                    "answer": "projects"
+                },
+                {
+                    "question": "The scientist was an expert who ______ in the field of marine biology.",
+                    "options": ["engaged", "operated", "specialized", "consulted"],
+                    "answer": "specialized"
+                },
+                {
+                    "question": "She decided to ______ the suggestion to go out for dinner because she was too tired.",
+                    "options": ["dismiss", "expand", "feature", "consult"],
+                    "answer": "dismiss"
+                },
+                {
+                    "question": "The doctor will first ______ the patient's symptoms before making a diagnosis.",
+                    "options": ["operate", "examine", "advise", "frown"],
+                    "answer": "examine"
+                },
+                {
+                    "question": "She likes to ______ short notes in a notebook whenever she gets a new idea.",
+                    "options": ["recover", "jot", "project", "marched"],
+                    "answer": "jot"
+                }
+            ];
+
+            let currentQuestionIndex = 0;
+            let score = 0;
+            let isAnswered = false;
+
+            const questionNumberEl = document.getElementById('question-number');
+            const questionTextEl = document.getElementById('question-text');
+            const optionsContainerEl = document.getElementById('options-container');
+            const scoreDisplayEl = document.getElementById('score-display');
+            const feedbackMessageEl = document.getElementById('feedback-message');
+            const nextButtonEl = document.getElementById('next-button');
+            const restartButtonEl = document.getElementById('restart-button');
+            const questionCardEl = document.getElementById('question-card');
+
+            // 顯示當前問題
+            function showQuestion() {
+                const q = quizData[currentQuestionIndex];
+                questionNumberEl.textContent = `問題：${currentQuestionIndex + 1} / ${quizData.length}`;
+                questionTextEl.textContent = q.question;
+                optionsContainerEl.innerHTML = '';
+                feedbackMessageEl.textContent = '';
+                feedbackMessageEl.classList.add('hidden');
+                nextButtonEl.classList.add('hidden');
+                
+                q.options.forEach(option => {
+                    const optionBtn = document.createElement('button');
+                    optionBtn.textContent = option;
+                    optionBtn.classList.add('bg-blue-500', 'hover:bg-blue-600', 'text-white', 'font-semibold', 'py-4', 'px-6', 'rounded-xl', 'shadow-md', 'transition-colors', 'duration-300', 'transform', 'hover:scale-105');
+                    optionBtn.addEventListener('click', () => handleAnswer(option, q.answer, optionBtn));
+                    optionsContainerEl.appendChild(optionBtn);
+                });
+
+                isAnswered = false;
+            }
+
+            // 處理使用者選擇答案
+            function handleAnswer(selectedOption, correctAnswer, clickedButton) {
+                if (isAnswered) return;
+                isAnswered = true;
+
+                // 停用所有選項
+                Array.from(optionsContainerEl.children).forEach(btn => {
+                    btn.classList.add('disabled-option');
+                    if (btn.textContent === correctAnswer) {
+                        btn.classList.add('bg-green-600', 'hover:bg-green-600');
+                    } else {
+                        btn.classList.add('bg-gray-400', 'hover:bg-gray-400');
+                    }
+                });
+
+                // 檢查答案並更新分數
+                if (selectedOption === correctAnswer) {
+                    score++;
+                    scoreDisplayEl.textContent = `分數：${score}`;
+                    feedbackMessageEl.textContent = "答對了！🎉";
+                    feedbackMessageEl.classList.remove('text-red-600');
+                    feedbackMessageEl.classList.add('text-green-600');
+                    clickedButton.classList.remove('bg-gray-400', 'hover:bg-gray-400');
+                    clickedButton.classList.add('bg-green-600', 'hover:bg-green-600');
+                } else {
+                    feedbackMessageEl.textContent = `答錯了... 正確答案是 "${correctAnswer}"`;
+                    feedbackMessageEl.classList.remove('text-green-600');
+                    feedbackMessageEl.classList.add('text-red-600');
+                    clickedButton.classList.remove('bg-gray-400', 'hover:bg-gray-400');
+                    clickedButton.classList.add('bg-red-600', 'hover:bg-red-600');
+                    // 讓正確答案變綠
+                    const correctBtn = Array.from(optionsContainerEl.children).find(btn => btn.textContent === correctAnswer);
+                    if(correctBtn) {
+                        correctBtn.classList.remove('bg-gray-400', 'hover:bg-gray-400');
+                        correctBtn.classList.add('bg-green-600', 'hover:bg-green-600');
+                    }
+                }
+
+                feedbackMessageEl.classList.remove('hidden');
+                nextButtonEl.classList.remove('hidden');
+            }
+
+            // 前往下一題或結束測驗
+            nextButtonEl.addEventListener('click', () => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < quizData.length) {
+                    showQuestion();
+                } else {
+                    showFinalScore();
+                }
+            });
+
+            // 顯示最終分數
+            function showFinalScore() {
+                questionCardEl.classList.add('hidden');
+                feedbackMessageEl.classList.remove('hidden');
+                feedbackMessageEl.textContent = `測驗結束！您的總分是 ${score} / ${quizData.length}。`;
+                scoreDisplayEl.classList.add('hidden');
+                questionNumberEl.classList.add('hidden');
+                nextButtonEl.classList.add('hidden');
+                restartButtonEl.classList.remove('hidden');
+            }
+
+            // 重新開始遊戲
+            restartButtonEl.addEventListener('click', () => {
+                currentQuestionIndex = 0;
+                score = 0;
+                scoreDisplayEl.textContent = `分數：0`;
+                scoreDisplayEl.classList.remove('hidden');
+                questionNumberEl.classList.remove('hidden');
+                questionCardEl.classList.remove('hidden');
+                restartButtonEl.classList.add('hidden');
+                showQuestion();
+            });
+
+            // 初始顯示第一個問題
+            showQuestion();
+        });
+    </script>
+</body>
+</html>
