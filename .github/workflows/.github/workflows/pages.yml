@@ -1,0 +1,21 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # 這邊請確認您的分支名稱是 main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./ # 這邊請確認您的網頁檔案就在根目錄
