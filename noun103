@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>名詞單字測驗</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .option-btn {
+            @apply w-full text-left p-4 rounded-lg transition-colors duration-200 border border-gray-200;
+        }
+        .option-btn.correct {
+            @apply bg-green-100 text-green-700 border-green-500 font-semibold;
+        }
+        .option-btn.wrong {
+            @apply bg-red-100 text-red-700 border-red-500 font-semibold;
+        }
+        .option-btn.disabled {
+            @apply bg-gray-100 text-gray-500 cursor-not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center p-4 min-h-screen">
+    <div class="container mx-auto max-w-2xl">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">名詞單字測驗</h1>
+            <p class="text-gray-600">點擊選項作答，立即查看結果。</p>
+        </div>
+
+        <div id="quiz-container" class="space-y-6">
+            <!-- Questions will be rendered here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const quizData = {
+            "questions": [
+                {
+                    "questionNumber": 1,
+                    "question": "The company's new policy includes a full money-back ______ if the customer is not satisfied.",
+                    "answerOptions": [
+                        {"text": "guarantee", "isCorrect": true, "rationale": "A 'guarantee' is a formal promise or assurance that certain conditions will be met, which fits the context of a company's promise to a customer."},
+                        {"text": "impression", "isCorrect": false, "rationale": "'Impression' refers to an idea or feeling, which is not a type of policy."},
+                        {"text": "distraction", "isCorrect": false, "rationale": "'Distraction' is something that prevents someone from giving their full attention, which does not fit the sentence."},
+                        {"text": "tendency", "isCorrect": false, "rationale": "'Tendency' is a natural inclination, not a formal promise."}
+                    ]
+                },
+                {
+                    "questionNumber": 2,
+                    "question": "The rapid growth of technology is a direct ______ of human innovation.",
+                    "answerOptions": [
+                        {"text": "diminution", "isCorrect": false, "rationale": "'Diminution' means a reduction or decrease, which is the opposite of 'growth'."},
+                        {"text": "reversal", "isCorrect": false, "rationale": "'Reversal' means a change to an opposite state, which doesn't fit the context."},
+                        {"text": "attribution", "isCorrect": true, "rationale": "'Attribution' is the act of regarding something as being caused by a person or thing, which accurately describes the relationship between technology growth and human innovation."},
+                        {"text": "admonishment", "isCorrect": false, "rationale": "'Admonishment' is a form of scolding or warning, unrelated to the sentence."}
+                    ]
+                },
+                {
+                    "questionNumber": 3,
+                    "question": "The latest report shows a significant ______ in the city's air pollution levels.",
+                    "answerOptions": [
+                        {"text": "struggle", "isCorrect": false, "rationale": "'Struggle' refers to a difficult effort, not a change in levels."},
+                        {"text": "diminution", "isCorrect": true, "rationale": "'Diminution' means a reduction or decrease, which fits the context of a decrease in pollution."},
+                        {"text": "expansion", "isCorrect": false, "rationale": "'Expansion' means the process of increasing in size or scope, which is the opposite of the intended meaning."},
+                        {"text": "implication", "isCorrect": false, "rationale": "'Implication' is a conclusion that can be drawn from something, not a change in levels."}
+                    ]
+                },
+                {
+                    "questionNumber": 4,
+                    "question": "Unexpected rainfall caused a complete ______ of the tournament's schedule.",
+                    "answerOptions": [
+                        {"text": "reversal", "isCorrect": true, "rationale": "'Reversal' means a change to the opposite direction, which accurately describes a sudden and complete change in a schedule."},
+                        {"text": "recovery", "isCorrect": false, "rationale": "'Recovery' is the process of getting better, not a change in a schedule."},
+                        {"text": "march", "isCorrect": false, "rationale": "'March' is a steady walk, which doesn't fit the context."},
+                        {"text": "capture", "isCorrect": false, "rationale": "'Capture' means taking something into possession, which is irrelevant to a schedule change."}
+                    ]
+                },
+                {
+                    "questionNumber": 5,
+                    "question": "The new phone's most exciting ______ is its high-resolution camera.",
+                    "answerOptions": [
+                        {"text": "feature", "isCorrect": true, "rationale": "A 'feature' is a distinctive attribute or aspect of something, which accurately describes a specific part of a new product."},
+                        {"text": "struggle", "isCorrect": false, "rationale": "'Struggle' means a difficult effort, which is not an aspect of a phone."},
+                        {"text": "glance", "isCorrect": false, "rationale": "'Glance' is a brief look, which is not a part of a product."},
+                        {"text": "breeding", "isCorrect": false, "rationale": "'Breeding' is the reproduction of organisms, which is unrelated to a phone."}
+                    ]
+                },
+                {
+                    "questionNumber": 6,
+                    "question": "The team's success was driven by a shared sense of ______ to win the championship.",
+                    "answerOptions": [
+                        {"text": "consultation", "isCorrect": false, "rationale": "'Consultation' is the act of seeking advice, which is not a driving force for a team's success."},
+                        {"text": "elimination", "isCorrect": false, "rationale": "'Elimination' is the removal of something, which doesn't fit the context."},
+                        {"text": "motivation", "isCorrect": true, "rationale": "'Motivation' is the reason for acting or behaving in a particular way, which perfectly describes the internal drive of a team to succeed."},
+                        {"text": "reversal", "isCorrect": false, "rationale": "'Reversal' is a change to the opposite, which is unrelated to the sentence."}
+                    ]
+                },
+                {
+                    "questionNumber": 7,
+                    "question": "After the long illness, her full ______ was slow but steady.",
+                    "answerOptions": [
+                        {"text": "vanish", "isCorrect": false, "rationale": "While 'vanish' implies disappearance, it is a verb. The sentence requires a noun."},
+                        {"text": "recovery", "isCorrect": true, "rationale": "'Recovery' is the state of returning to health, which accurately describes the process after an illness."},
+                        {"text": "march", "isCorrect": false, "rationale": "'March' is a steady walk, which is irrelevant."},
+                        {"text": "admonishment", "isCorrect": false, "rationale": "'Admonishment' is a form of scolding, which is unrelated to the sentence."}
+                    ]
+                },
+                {
+                    "questionNumber": 8,
+                    "question": "His sarcastic tone carried the clear ______ that he was not pleased with the suggestion.",
+                    "answerOptions": [
+                        {"text": "projection", "isCorrect": false, "rationale": "'Projection' is the act of throwing something or predicting, which is not a hidden meaning."},
+                        {"text": "implication", "isCorrect": true, "rationale": "'Implication' is a conclusion that can be drawn from something although it is not explicitly stated. This fits the context of an unstated meaning behind a tone of voice."},
+                        {"text": "specialization", "isCorrect": false, "rationale": "'Specialization' is the act of becoming an expert in a field, which is unrelated to the sentence."},
+                        {"text": "guarantee", "isCorrect": false, "rationale": "'Guarantee' is a promise, which is not the hidden meaning of a tone."}
+                    ]
+                },
+                {
+                    "questionNumber": 9,
+                    "question": "The planned ______ of the new building will make room for 50 more offices.",
+                    "answerOptions": [
+                        {"text": "expansion", "isCorrect": true, "rationale": "'Expansion' is the act of increasing in size or scope, which fits the context of building a larger office."},
+                        {"text": "consultation", "isCorrect": false, "rationale": "'Consultation' is seeking advice, which is unrelated to building an office."},
+                        {"text": "elimination", "isCorrect": false, "rationale": "'Elimination' is the act of removing something, which is the opposite of the intended meaning."},
+                        {"text": "capture", "isCorrect": false, "rationale": "'Capture' is the act of taking something into possession, which is irrelevant to building expansion."}
+                    ]
+                },
+                {
+                    "questionNumber": 10,
+                    "question": "The final ______ for the gold medal was intense, with both athletes giving their all.",
+                    "answerOptions": [
+                        {"text": "struggle", "isCorrect": true, "rationale": "'Struggle' refers to a strenuous or difficult effort, which accurately describes the fierce competition between athletes."},
+                        {"text": "projection", "isCorrect": false, "rationale": "'Projection' is the act of throwing something or predicting, which is not a competition."},
+                        {"text": "glance", "isCorrect": false, "rationale": "'Glance' is a brief look, which is irrelevant."},
+                        {"text": "consultation", "isCorrect": false, "rationale": "'Consultation' is seeking advice, which is unrelated to a competition."}
+                    ]
+                },
+                {
+                    "questionNumber": 11,
+                    "question": "With a graceful ______, the dancer moved across the stage.",
+                    "answerOptions": [
+                        {"text": "reversal", "isCorrect": false, "rationale": "'Reversal' means a change to the opposite direction, which is not a type of movement."},
+                        {"text": "glide", "isCorrect": true, "rationale": "A 'glide' is a smooth, continuous movement, which accurately describes a graceful dance move."},
+                        {"text": "march", "isCorrect": false, "rationale": "A 'march' is a steady, rhythmic walk, which is not 'graceful'."},
+                        {"text": "admonishment", "isCorrect": false, "rationale": "'Admonishment' is a form of scolding, which is unrelated to a dancer's movement."}
+                    ]
+                },
+                {
+                    "questionNumber": 12,
+                    "question": "The detective showed a perfect ______ of the suspect on the security footage.",
+                    "answerOptions": [
+                        {"text": "elimination", "isCorrect": false, "rationale": "'Elimination' is the removal of something, which doesn't fit the context."},
+                        {"text": "capture", "isCorrect": true, "rationale": "'Capture' means the act of taking something or someone into possession, and in this context, it refers to a recorded image or video."},
+                        {"text": "consultation", "isCorrect": false, "rationale": "'Consultation' is seeking advice, which is unrelated."},
+                        {"text": "specialization", "isCorrect": false, "rationale": "'Specialization' is the act of becoming an expert, which is irrelevant to a photo or video."}
+                    ]
+                },
+                {
+                    "questionNumber": 13,
+                    "question": "The polluted river led to the ______ of various health problems in the nearby town.",
+                    "answerOptions": [
+                        {"text": "breeding", "isCorrect": true, "rationale": "'Breeding' means the production of offspring. In this context, it is used figuratively to mean the 'creation' or 'cause' of problems."},
+                        {"text": "march", "isCorrect": false, "rationale": "'March' is a steady walk, which doesn't fit the context."},
+                        {"text": "recovery", "isCorrect": false, "rationale": "'Recovery' is the process of getting better, which is the opposite of the intended meaning."},
+                        {"text": "implication", "isCorrect": false, "rationale": "'Implication' is a conclusion that can be drawn from something, not a cause."}
+                    ]
+                },
+                {
+                    "questionNumber": 14,
+                    "question": "Before making a decision, the CEO had a private **______** with the company's financial advisor.",
+                    "answerOptions": [
+                        {"text": "consultation", "isCorrect": true, "rationale": "'Consultation' is the act of seeking advice from an expert, which is exactly what a CEO would do with a financial advisor."},
+                        {"text": "elimination", "isCorrect": false, "rationale": "'Elimination' is the act of removing something, which is unrelated."},
+                        {"text": "diminution", "isCorrect": false, "rationale": "'Diminution' means a decrease, which is irrelevant."},
+                        {"text": "projection", "isCorrect": false, "rationale": "'Projection' is the act of throwing something or predicting, which is not a discussion with an advisor."}
+                    ]
+                },
+                {
+                    "questionNumber": 15,
+                    "question": "The ______ of the disease from the community was the main goal of the health campaign.",
+                    "answerOptions": [
+                        {"text": "expansion", "isCorrect": false, "rationale": "'Expansion' is the act of increasing in size, which is the opposite of the goal."},
+                        {"text": "elimination", "isCorrect": true, "rationale": "'Elimination' is the complete removal or destruction of something, which accurately describes the goal of a health campaign."},
+                        {"text": "reversal", "isCorrect": false, "rationale": "'Reversal' means a change to the opposite state, which doesn't fit the context."},
+                        {"text": "struggle", "isCorrect": false, "rationale": "'Struggle' refers to a difficult effort, not the final result of a campaign."}
+                    ]
+                },
+                {
+                    "questionNumber": 16,
+                    "question": "The sudden ______ of the hiker's footprints in the snow puzzled the rescuers.",
+                    "answerOptions": [
+                        {"text": "vanish", "isCorrect": false, "rationale": "While 'vanish' implies disappearance, it is a verb. The sentence requires a noun."},
+                        {"text": "vanishing", "isCorrect": true, "rationale": "'Vanishing' is the gerund form of 'vanish,' meaning the action of disappearing, which is the perfect noun for this context."},
+                        {"text": "march", "isCorrect": false, "rationale": "'March' is a steady walk, which is irrelevant."},
+                        {"text": "recovery", "isCorrect": false, "rationale": "'Recovery' is the process of getting better, which is unrelated."}
+                    ]
+                },
+                {
+                    "questionNumber": 17,
+                    "question": "The solemn ______ of the soldiers began from the city square towards the memorial.",
+                    "answerOptions": [
+                        {"text": "glide", "isCorrect": false, "rationale": "'Glide' is a smooth, continuous movement, which doesn't fit the context of soldiers."},
+                        {"text": "march", "isCorrect": true, "rationale": "'March' is a walk or movement with a steady, regular pace, typically by a group of people, which accurately describes a procession of soldiers."},
+                        {"text": "struggle", "isCorrect": false, "rationale": "'Struggle' refers to a difficult effort, which is not a type of procession."},
+                        {"text": "implication", "isCorrect": false, "rationale": "'Implication' is a conclusion that can be drawn from something, which is unrelated to the sentence."}
+                    ]
+                },
+                {
+                    "questionNumber": 18,
+                    "question": "The child received a gentle ______ from his parents for his rude behavior at the dinner table.",
+                    "answerOptions": [
+                        {"text": "admonishment", "isCorrect": true, "rationale": "'Admonishment' is a gentle but firm warning or scolding, which is what the parents gave to their child."},
+                        {"text": "guarantee", "isCorrect": false, "rationale": "'Guarantee' is a promise, which doesn't fit the context."},
+                        {"text": "consultation", "isCorrect": false, "rationale": "'Consultation' is seeking advice, which is irrelevant."},
+                        {"text": "diminution", "isCorrect": false, "rationale": "'Diminution' means a decrease, which is unrelated."}
+                    ]
+                },
+                {
+                    "questionNumber": 19,
+                    "question": "The CEO's latest ______ for next year shows a significant increase in revenue.",
+                    "answerOptions": [
+                        {"text": "projection", "isCorrect": true, "rationale": "A 'projection' is an estimate or forecast of a future situation based on current trends, which fits the context of a business forecast."},
+                        {"text": "reversal", "isCorrect": false, "rationale": "'Reversal' means a change to the opposite state, which is not a business forecast."},
+                        {"text": "breeding", "isCorrect": false, "rationale": "'Breeding' is the reproduction of organisms, which is unrelated to a business forecast."},
+                        {"text": "capture", "isCorrect": false, "rationale": "'Capture' means taking something, which is irrelevant."}
+                    ]
+                },
+                {
+                    "questionNumber": 20,
+                    "question": "Her deep knowledge is a result of a long-term ______ in a specific research field.",
+                    "answerOptions": [
+                        {"text": "specialization", "isCorrect": true, "rationale": "'Specialization' is the act of becoming an expert in a particular area, which explains her deep knowledge."},
+                        {"text": "elimination", "isCorrect": false, "rationale": "'Elimination' is the removal of something, which is unrelated to knowledge."},
+                        {"text": "implication", "isCorrect": false, "rationale": "'Implication' is a hidden meaning, which is unrelated to becoming an expert."},
+                        {"text": "guarantee", "isCorrect": false, "rationale": "'Guarantee' is a promise, which is irrelevant to gaining knowledge."}
+                    ]
+                }
+            ]
+        };
+
+        const quizContainer = document.getElementById('quiz-container');
+
+        quizData.questions.forEach(q => {
+            const questionElement = document.createElement('div');
+            questionElement.className = 'card p-6 mb-8';
+
+            const questionTitle = document.createElement('h3');
+            questionTitle.className = 'text-xl font-semibold mb-4 text-gray-700';
+            questionTitle.textContent = `${q.questionNumber}. ${q.question}`;
+            questionElement.appendChild(questionTitle);
+
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+
+            q.answerOptions.forEach(option => {
+                const optionBtn = document.createElement('button');
+                optionBtn.className = 'option-btn hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50';
+                optionBtn.textContent = option.text;
+                optionBtn.onclick = () => handleAnswer(q.questionNumber, optionBtn, option.isCorrect, option.rationale, optionsContainer);
+                optionsContainer.appendChild(optionBtn);
+            });
+
+            questionElement.appendChild(optionsContainer);
+            quizContainer.appendChild(questionElement);
+        });
+
+        function handleAnswer(questionNumber, selectedBtn, isCorrect, rationale, optionsContainer) {
+            const allButtons = optionsContainer.querySelectorAll('button');
+            allButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('disabled');
+            });
+
+            if (isCorrect) {
+                selectedBtn.classList.add('correct');
+            } else {
+                selectedBtn.classList.add('wrong');
+            }
+
+            // Display rationale/correct answer
+            const rationaleElement = document.createElement('p');
+            rationaleElement.className = 'mt-4 p-3 rounded-lg text-sm transition-all duration-300 ease-in-out';
+            if (isCorrect) {
+                rationaleElement.classList.add('bg-green-100', 'text-green-700', 'border-l-4', 'border-green-500');
+                rationaleElement.textContent = `答對了！ ${rationale}`;
+            } else {
+                rationaleElement.classList.add('bg-red-100', 'text-red-700', 'border-l-4', 'border-red-500');
+                rationaleElement.textContent = `答錯了。正確答案是：${quizData.questions[questionNumber - 1].answerOptions.find(opt => opt.isCorrect).text}. ${rationale}`;
+            }
+            optionsContainer.parentNode.appendChild(rationaleElement);
+        }
+    </script>
+</body>
+</html>
